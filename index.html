@@ -29,7 +29,12 @@
         .title { font-size: 1.8rem; background: linear-gradient(135deg, #ffcc44, #ff8844); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .sub { color: #ffaa66; font-size: 0.7rem; }
         
-        /* شريط التنقل الرئيسي (قوائم) */
+        /* شريط البحث */
+        .search-bar { display: flex; gap: 10px; margin: 20px 0; justify-content: center; }
+        .search-bar input { flex: 1; padding: 12px 20px; border-radius: 60px; border: none; background: #1e1e2a; color: white; font-size: 1rem; }
+        .search-bar button { background: #ffaa33; border: none; padding: 0 20px; border-radius: 60px; font-weight: bold; cursor: pointer; color: black; }
+        
+        /* شريط التنقل الرئيسي */
         .nav-bar {
             display: flex;
             flex-wrap: wrap;
@@ -59,25 +64,27 @@
         /* بطاقات الأنمي */
         .section-title { font-size: 1.3rem; color: #ffaa33; margin: 20px 0 10px; border-right: 4px solid #ffaa33; padding-right: 10px; }
         .anime-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .anime-card { background: rgba(25, 25, 45, 0.85); border-radius: 20px; overflow: hidden; cursor: pointer; transition: 0.2s; border: 1px solid #2a2a3a; }
+        .anime-card { background: rgba(25, 25, 45, 0.85); border-radius: 20px; overflow: hidden; cursor: pointer; transition: 0.2s; border: 1px solid #2a2a3a; position: relative; }
         .anime-card:hover { transform: translateY(-5px); border-color: #ffaa33; }
         .anime-card img { width: 100%; height: 200px; object-fit: cover; }
         .anime-card h4 { padding: 8px; font-size: 0.8rem; text-align: center; color: #ffdd99; }
         .anime-card p { padding: 0 8px 8px; font-size: 0.65rem; color: #aaa; text-align: center; }
+        .fav-btn-small { position: absolute; top: 5px; left: 5px; background: #ffaa33; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 0.8rem; }
         
-        /* قائمة جانبية للموبايل */
+        /* القائمة الجانبية */
         .side-menu {
             position: fixed;
             top: 0;
-            right: -280px;
-            width: 260px;
+            right: -300px;
+            width: 280px;
             height: 100%;
             background: #0a0f1aee;
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
             z-index: 1000;
             transition: 0.3s;
-            padding: 60px 15px;
+            padding: 70px 20px;
             border-left: 2px solid #ffaa33;
+            overflow-y: auto;
         }
         .side-menu.open { right: 0; }
         .menu-toggle {
@@ -93,14 +100,20 @@
             cursor: pointer;
             z-index: 1001;
             color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+        .side-menu h3 { color: #ffaa33; margin-bottom: 20px; text-align: center; }
         .side-menu a {
             display: block;
-            color: #ffaa33;
+            color: #ffaa66;
             padding: 12px;
             text-decoration: none;
             border-bottom: 1px solid #333;
+            cursor: pointer;
         }
+        .side-menu a:hover { background: #ffaa3311; color: #ffaa33; }
         
         /* وضع الساحر */
         .wizard-btn { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(45deg, magenta, purple); border: none; border-radius: 50px; padding: 10px 15px; color: white; cursor: pointer; z-index: 200; }
@@ -116,10 +129,37 @@
 <div class="stars" id="stars"></div>
 <div class="splash"><h1>🔥 AHMED 🔥</h1><p style="color: gold;">حاكم المجال البرنس حمودي</p><p>إمبراطورية الأنمي الأسطورية</p></div>
 
+<!-- القائمة الجانبية -->
+<div class="side-menu" id="sideMenu">
+    <h3>⚙️ القائمة الملكية</h3>
+    <a onclick="navigateTo('home')">🏠 الرئيسية</a>
+    <a onclick="navigateTo('anime-list')">📋 قائمة الأنمي</a>
+    <a onclick="navigateTo('seasons')">📅 المواسم</a>
+    <a onclick="navigateTo('stats')">📊 الإحصائيات</a>
+    <a onclick="navigateTo('upcoming')">⏰ قادم قريباً</a>
+    <a onclick="navigateTo('favorites')">❤️ مفضلاتي</a>
+    <a onclick="navigateTo('characters')">👤 شخصياتي</a>
+    <a onclick="navigateTo('schedule')">📆 جدول الحلقات</a>
+    <a onclick="navigateTo('news')">📰 الأخبار</a>
+    <a onclick="navigateTo('apps')">📱 تطبيقاتنا</a>
+    <a onclick="navigateTo('settings')">⚙️ الإعدادات</a>
+    <hr style="margin:15px 0; border-color:#333;">
+    <a onclick="toggleWizard()">🧙 وضع الساحر</a>
+    <a onclick="clearAllData()">🗑️ مسح بياناتي</a>
+</div>
+
+<button class="menu-toggle" id="menuToggle">☰</button>
+
 <div class="container">
     <div class="header"><div class="title">🕸 AHMED ANIME 🕸</div><div class="sub">أكثر من 20,000 أنمي | جودة 4K | تحديث فوري</div></div>
 
-    <!-- شريط القوائم الرئيسي -->
+    <!-- شريط البحث -->
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="🔍 ابحث عن أنمي بالعربي أو الإنجليزي...">
+        <button id="searchBtn">بحث</button>
+    </div>
+
+    <!-- شريط التنقل الرئيسي -->
     <div class="nav-bar">
         <button class="nav-btn active" data-page="home">🏠 الرئيسية</button>
         <button class="nav-btn" data-page="anime-list">📋 قائمة الأنمي</button>
@@ -134,7 +174,7 @@
         <button class="nav-btn" data-page="settings">⚙️ الإعدادات</button>
     </div>
 
-    <!-- صفحة الرئيسية -->
+    <!-- الصفحات -->
     <div id="home" class="page active-page">
         <div class="section-title">🔥 آخر التحديثات</div>
         <div class="anime-grid" id="recentGrid"><div>⏳ جلب...</div></div>
@@ -146,7 +186,6 @@
         <div id="charGrid" style="display: flex; gap: 10px; flex-wrap: wrap;">➕ أضف شخصيات</div>
     </div>
 
-    <!-- باقي الصفحات (محتوى ديناميكي) -->
     <div id="anime-list" class="page"><div class="section-title">📋 قائمة الأنمي</div><div id="allAnimeGrid" class="anime-grid"></div></div>
     <div id="seasons" class="page"><div class="section-title">📅 المواسم (ربيع 2025، صيف 2025، خريف 2025)</div><div id="seasonsGrid" class="anime-grid"></div></div>
     <div id="stats" class="page"><div class="section-title">📊 الإحصائيات العالمية</div><div id="statsInfo" style="background:#111; padding:15px; border-radius:20px;"></div></div>
@@ -156,7 +195,7 @@
     <div id="schedule" class="page"><div class="section-title">📆 جدول الحلقات (اليوم)</div><div id="scheduleGrid"></div></div>
     <div id="news" class="page"><div class="section-title">📰 أخبار الأنمي</div><div id="newsGrid"></div></div>
     <div id="apps" class="page"><div class="section-title">📱 تطبيقاتنا</div><div>🔹 تطبيق AHMED ANIME (أنت هنا)<br>🔹 قريباً: تطبيق المانجا الملكي<br>🔹 قريباً: تطبيق الشخصيات</div></div>
-    <div id="settings" class="page"><div class="section-title">⚙️ الإعدادات</div><div>🔘 وضع الساحر (من الزر الأيمن)<br>🔘 حفظ المفضلة تلقائياً<br>🔘 جودة المشاهدة: HD<br>🔘 إشعارات: مفعلة</div></div>
+    <div id="settings" class="page"><div class="section-title">⚙️ الإعدادات</div><div>🔘 وضع الساحر (من الزر الأيمن أو القائمة)<br>🔘 حفظ المفضلة تلقائياً<br>🔘 جودة المشاهدة: HD<br>🔘 إشعارات: مفعلة</div></div>
 
     <div class="footer">© 2099 - حاكم المجال البرنس حمودي AHMED | جميع الحقوق محفوظة<br>💀 إمبراطورية الأنمي الأسطورية 💀</div>
 </div>
@@ -164,32 +203,31 @@
 <button class="wizard-btn" id="wizardBtn">🧙 ساحر</button>
 
 <script>
-    // نجوم
+    // نجوم متحركة
     function createStars() { for(let i=0;i<200;i++){ let s=document.createElement('div'); s.classList.add('star'); s.style.left=Math.random()*100+'%'; s.style.top=Math.random()*100+'%'; s.style.animationDuration=Math.random()*3+1+'s'; document.getElementById('stars').appendChild(s); } }
     createStars();
     
     // وضع الساحر
     let wizard=false;
-    document.getElementById('wizardBtn').onclick=()=>{ wizard=!wizard; if(wizard){ document.body.classList.add('wizard'); alert('🧙 وضع الساحر مفعل'); } else { document.body.classList.remove('wizard'); } };
+    function toggleWizard(){ wizard=!wizard; if(wizard){ document.body.classList.add('wizard'); alert('🧙 وضع الساحر مفعل'); } else { document.body.classList.remove('wizard'); } }
+    document.getElementById('wizardBtn').onclick=toggleWizard;
     
-    // التنقل بين الصفحات
-    document.querySelectorAll('.nav-btn').forEach(btn=>{
-        btn.onclick=()=>{
-            document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-            btn.classList.add('active');
-            let pageId=btn.getAttribute('data-page');
-            document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
-            document.getElementById(pageId).classList.add('active-page');
-        };
-    });
+    // القائمة الجانبية
+    const sideMenu=document.getElementById('sideMenu');
+    document.getElementById('menuToggle').onclick=()=>{ sideMenu.classList.toggle('open'); };
+    document.onclick=(e)=>{ if(!sideMenu.contains(e.target) && e.target!==document.getElementById('menuToggle')) sideMenu.classList.remove('open'); };
+    
+    function navigateTo(pageId){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page')); document.getElementById(pageId).classList.add('active-page'); sideMenu.classList.remove('open'); document.querySelectorAll('.nav-btn').forEach(btn=>{ if(btn.getAttribute('data-page')===pageId) btn.classList.add('active'); else btn.classList.remove('active'); }); }
+    
+    window.navigateTo=navigateTo;
     
     // جلب بيانات الأنمي من AniList
     async function fetchAnime(sortType='TRENDING_DESC', limit=12, containerId, search='') {
         let container=document.getElementById(containerId);
         if(!container) return;
         container.innerHTML='<div>⏳ جلب...</div>';
-        let query=search?`query ($search:String){Page(page:1,perPage:${limit}){media(search:$search,type:ANIME){id,title{userPreferred},coverImage{large},episodes,averageScore}}}`:
-        `query ($sort:[MediaSort]){Page(page:1,perPage:${limit}){media(type:ANIME,sort:$sort){id,title{userPreferred},coverImage{large},episodes,averageScore}}}`;
+        let query=search?`query ($search:String){Page(page:1,perPage:${limit}){media(search:$search,type:ANIME){id,title{userPreferred},coverImage{large},episodes,averageScore,genres}}}`:
+        `query ($sort:[MediaSort]){Page(page:1,perPage:${limit}){media(type:ANIME,sort:$sort){id,title{userPreferred},coverImage{large},episodes,averageScore,genres}}}`;
         let vars=search?{search:search}:{sort:[sortType]};
         try{
             let res=await fetch('https://graphql.anilist.co',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query,variables:vars})});
@@ -200,56 +238,69 @@
             media.forEach(anime=>{
                 let card=document.createElement('div'); card.className='anime-card';
                 let score=anime.averageScore?`⭐ ${(anime.averageScore/10).toFixed(1)}`:'⭐';
-                card.innerHTML=`<img src="${anime.coverImage?.large||''}" loading="lazy"><h4>${anime.title?.userPreferred||'?'}</h4><p>${score} | 📺 ${anime.episodes||'?'}</p>`;
-                card.onclick=()=>{ window.open(`https://gogoanime.llc/search.html?keyword=${encodeURIComponent(anime.title?.userPreferred)}`,'_blank'); };
+                let genres=anime.genres?.slice(0,2).join(', ')||'';
+                card.innerHTML=`<button class="fav-btn-small" onclick="event.stopPropagation(); addToFav('${anime.title?.userPreferred?.replace(/'/g,"\\'")}')">❤️</button>
+                    <img src="${anime.coverImage?.large||''}" loading="lazy">
+                    <h4>${anime.title?.userPreferred||'?'}</h4>
+                    <p>${score} | 📺 ${anime.episodes||'?'}</p>
+                    <p style="font-size:0.6rem;">${genres}</p>`;
+                card.onclick=()=>{ window.open(`https://animepahe.ru/search?q=${encodeURIComponent(anime.title?.userPreferred)}`,'_blank'); };
                 container.appendChild(card);
             });
         }catch(e){ container.innerHTML='<div>❌ خطأ في الاتصال</div>'; }
     }
     
-    // تحميل البيانات لكل قسم
+    // البحث
+    document.getElementById('searchBtn').onclick=()=>{ let q=document.getElementById('searchInput').value.trim(); if(q){ fetchAnime('',20,'allAnimeGrid',q); document.querySelector('[data-page="anime-list"]').click(); } };
+    document.getElementById('searchInput').onkeypress=(e)=>{ if(e.key==='Enter') document.getElementById('searchBtn').click(); };
+    
+    // تحميل البيانات
     fetchAnime('TRENDING_DESC',6,'recentGrid');
     fetchAnime('TRENDING_DESC',12,'trendingGrid');
     fetchAnime('POPULARITY_DESC',20,'allAnimeGrid');
     fetchAnime('POPULARITY_DESC',10,'upcomingGrid');
     fetchAnime('POPULARITY_DESC',12,'seasonsGrid');
     
-    // إحصائيات وهمية
+    // إحصائيات
     document.getElementById('statsInfo').innerHTML=`📈 إجمالي الأنميات: 21,547<br>👥 المشاهدات اليومية: 1.2M<br>⭐ أعلى تقييم: Fullmetal Alchemist (9.1)<br>🔥 أكثر أنمي مشاهدة: One Piece<br>🌍 المستخدمين النشطين: 45,892`;
     
-    // جدول الحلقات وهمي
+    // جدول الحلقات
     document.getElementById('scheduleGrid').innerHTML=`<div style="background:#111; padding:10px; border-radius:15px;">• الإثنين: Solo Leveling (الحلقة 12)<br>• الثلاثاء: One Piece (الحلقة 1100)<br>• الأربعاء: Jujutsu Kaisen (الموسم 2)<br>• الخميس: Spy x Family<br>• الجمعة: Demon Slayer<br>• السبت: My Hero Academia<br>• الأحد: Attack on Titan (OVA)</div>`;
     
-    // أخبار وهمية
+    // أخبار
     document.getElementById('newsGrid').innerHTML=`<div style="background:#111; padding:10px; border-radius:15px;">📢 إعلان: الموسم الجديد من Solo Leveling قادم!<br>📢 فيلم Demon Slayer يحقق أعلى إيرادات<br>📢 تحديث التطبيق: إضافة خاصية المشاهدة بدون إعلانات</div>`;
     
-    // المفضلة (تخزين محلي)
+    // المفضلة
     let favorites=JSON.parse(localStorage.getItem('ahmedFav'))||[];
-    function updateFavGrid(){
-        let container=document.getElementById('myFavGrid');
-        if(!container) return;
-        if(favorites.length===0){container.innerHTML='<div>➕ أضف أنمياتك المفضلة من القائمة</div>'; return;}
-        container.innerHTML='';
-        favorites.forEach(name=>{ let d=document.createElement('div'); d.className='anime-card'; d.innerHTML=`<h4>${name}</h4><button style="background:red; margin:5px;" onclick="removeFav('${name}')">❌ حذف</button><button style="background:#ffaa33;" onclick="watchAnime('${name}')">🎬 مشاهدة</button>`; container.appendChild(d); });
-    }
+    function updateFavGrid(){ let container=document.getElementById('myFavGrid'); if(!container) return; if(favorites.length===0){ container.innerHTML='<div>➕ أضف أنمياتك المفضلة من القائمة</div>'; return; } container.innerHTML=''; favorites.forEach(name=>{ let d=document.createElement('div'); d.className='anime-card'; d.innerHTML=`<h4>${name}</h4><button style="background:red; margin:5px;" onclick="removeFav('${name.replace(/'/g,"\\'")}')">❌ حذف</button><button style="background:#ffaa33;" onclick="watchAnime('${name.replace(/'/g,"\\'")}')">🎬 مشاهدة</button>`; container.appendChild(d); }); }
     window.removeFav=(name)=>{ favorites=favorites.filter(f=>f!==name); localStorage.setItem('ahmedFav',JSON.stringify(favorites)); updateFavGrid(); };
-    window.watchAnime=(name)=>{ window.open(`https://gogoanime.llc/search.html?keyword=${encodeURIComponent(name)}`,'_blank'); };
+    window.watchAnime=(name)=>{ window.open(`https://animepahe.ru/search?q=${encodeURIComponent(name)}`,'_blank'); };
+    window.addToFav=(name)=>{ if(!favorites.includes(name)){ favorites.push(name); localStorage.setItem('ahmedFav',JSON.stringify(favorites)); updateFavGrid(); alert(`✅ تمت إضافة ${name} إلى المفضلة`); } else alert('⚠️ موجود بالفعل'); };
     updateFavGrid();
-    
-    // إضافة إلى المفضلة (من قائمة الأنمي)
-    function addToFav(name){ if(!favorites.includes(name)){ favorites.push(name); localStorage.setItem('ahmedFav',JSON.stringify(favorites)); updateFavGrid(); alert(`✅ تمت إضافة ${name} إلى المفضلة`); } else alert('⚠️ موجود بالفعل'); }
-    window.addToFav=addToFav;
     
     // شخصيات مفضلة
     let chars=JSON.parse(localStorage.getItem('ahmedChars'))||[];
-    function updateCharGrid(){ let cdiv=document.getElementById('myCharsGrid'); if(!cdiv) return; if(chars.length===0){ cdiv.innerHTML='<div>➕ أضف شخصياتك المفضلة</div>'; return; } cdiv.innerHTML=''; chars.forEach(ch=>{ let div=document.createElement('div'); div.style.background='#222'; div.style.margin='5px'; div.style.padding='8px'; div.style.borderRadius='20px'; div.innerHTML=`${ch} <button style="background:red;" onclick="removeChar('${ch}')">❌</button>`; cdiv.appendChild(div); }); }
+    function updateCharGrid(){ let cdiv=document.getElementById('myCharsGrid'); if(!cdiv) return; if(chars.length===0){ cdiv.innerHTML='<div>➕ أضف شخصياتك المفضلة</div>'; return; } cdiv.innerHTML=''; chars.forEach(ch=>{ let div=document.createElement('div'); div.style.background='#222'; div.style.margin='5px'; div.style.padding='8px'; div.style.borderRadius='20px'; div.innerHTML=`${ch} <button style="background:red;" onclick="removeChar('${ch.replace(/'/g,"\\'")}')">❌</button>`; cdiv.appendChild(div); }); }
     window.removeChar=(ch)=>{ chars=chars.filter(c=>c!==ch); localStorage.setItem('ahmedChars',JSON.stringify(chars)); updateCharGrid(); };
     window.addChar=()=>{ let name=prompt('أدخل اسم الشخصية'); if(name){ chars.push(name); localStorage.setItem('ahmedChars',JSON.stringify(chars)); updateCharGrid(); } };
     updateCharGrid();
     
-    // إضافة زر إضافة شخصية
     let charDiv=document.getElementById('charGrid');
     if(charDiv){ charDiv.innerHTML+=`<button onclick="addChar()" style="background:#ffaa33; color:black; border:none; padding:8px 15px; border-radius:30px;">➕ إضافة شخصية جديدة</button>`; }
+    
+    // مسح البيانات
+    window.clearAllData=()=>{ if(confirm('⚠️ هل أنت متأكد؟ سيتم مسح جميع المفضلات والشخصيات')){ localStorage.removeItem('ahmedFav'); localStorage.removeItem('ahmedChars'); favorites=[]; chars=[]; updateFavGrid(); updateCharGrid(); alert('✅ تم مسح البيانات'); } };
+    
+    // التنقل بين الصفحات من الأزرار
+    document.querySelectorAll('.nav-btn').forEach(btn=>{
+        btn.onclick=()=>{
+            document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            let pageId=btn.getAttribute('data-page');
+            document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
+            document.getElementById(pageId).classList.add('active-page');
+        };
+    });
 </script>
 </body>
-</html>
+            </html>
